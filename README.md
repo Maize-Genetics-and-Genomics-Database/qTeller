@@ -2,7 +2,7 @@ qTeller
 =======
 
 
-RNA-seq processing pipeline and modular web interface
+RNA-seq processing pipeline and modular web interface.
 
 For an examples of MaizeGDB's qTeller web interfaces visit 
 <a href="http://qteller2.usda.iastate.edu">http://qteller2.usda.iastate.edu</a>
