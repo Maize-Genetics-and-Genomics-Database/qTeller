@@ -10,35 +10,13 @@ For an examples of MaizeGDB's qTeller web interfaces visit
 
 | Directory Name   | Description |
 |------------------|:---------------------:|
-| [build_db](/backup_of_build_db_web_interface/build_db) | Scripts for constructing the SQLite DB|
-| [rna_process](/rna_process) | RNA analysis scripts|
-| [web_interface](/backup_of_build_db_web_interface/web_interface) | Public facing files that are served by the Apache Server.|
+| [build_db](/qteller_python2.7/build_db) | Scripts for constructing the SQLite DB|
+| [rna_process](/qteller_python2.7/rna_process) | RNA analysis scripts|
+| [web_interface](/qteller_python2.7/web_interface) | Public facing files that are served by the Apache Server.|
 
-
-## Virtual Machine ##
-
-The MaizeGDB qTeller VM (qteller2) can be found under MaizeGDB's vSphere resource pool "Dev" within datacenter blade3.usda.iastate.edu:
-
-```
-blade3.usda.iastate.edu
-└── Dev
-    └── qteller2
-```
-
-### VM Specs
-
-```
-Hostname: qteller2.usda.iastate.edu
-Operating System: CentOS release 6.9 (Final)
-VM Version: 8
-Memory: 4096 MB
-Memory Overhead: 44.05 MB
-CPU: 1 vCPU
-```
 
 ### Access
 For username / password details, please contact [Carson Andorf](mailto:carson.andorf@ars.usda.gov).
-
 
 ## Environment Requirements ##
 
@@ -97,7 +75,7 @@ $ scl enable python27 'pip install -r requirements.txt'
 
 ### Additional Instructions
 
-Upon successful installation of Python, PHP, and Apache, you can `git clone` this project into your Apache directory. The public-facing directories are located in the [web_interface](/backup_of_build_db_web_interface/web_interface) directory. Assuming a default Apache installation, the DocumentRoot in the `httpd.conf` would look like this:
+Upon successful installation of Python, PHP, and Apache, you can `git clone` this project into your Apache directory. The public-facing directories are located in the [web_interface](/qteller_python2.7/web_interface) directory. Assuming a default Apache installation, the DocumentRoot in the `httpd.conf` would look like this:
 
 ```
 DocumentRoot "/var/www/html/qTeller/web_interface"
@@ -113,9 +91,9 @@ The qTeller database generation script requires the following 3 files:
       `$ mkdir build_db/fpkm_tracking`
       * Drop your fpkm_tracking files in the **build_db/fpkm_tracking** directory. They must end with the **.fpkm_tracking** file extension.
   2. GFF file
-      * Download a GFF file for your desired genome and place it in the [build_db](/backup_of_build_db_web_interface/build_db) directory.
+      * Download a GFF file for your desired genome and place it in the [build_db](/qteller_python2.7/build_db) directory.
   3. CSV file
-      * Create a metadata file in CSV format so the script knows how to interpret the fpkm_tracking files. Here is an [example](backup_of_build_db_web_interface/build_db/anno_meta_maizev4.csv).
+      * Create a metadata file in CSV format so the script knows how to interpret the fpkm_tracking files. Here is an [example](qteller_python2.7/build_db/anno_meta_maizev4.csv).
       * **NOTE:** The *File_handle* column specifies the name of the fpkm tracking file to load **(minus the .fpkm_tracking file extension)**
     
 Assuming you have the required files, you can create the SQLite DB using the following command: 
@@ -129,7 +107,7 @@ where <METADATA.CSV> is the CSV file (3), <GFF.gff3> is the GFF file (2), and fp
 
 * *Fun fact:* you can use the [SQLite Viewer](http://inloop.github.io/sqlite-viewer/) to easily look inside the DB and experiment with queries.
 
-Finally, the last step is to move the generated `qt4db` file into the [web_interface](/backup_of_build_db_web_interface/web_interface) directory:
+Finally, the last step is to move the generated `qt4db` file into the [web_interface](/qteller_python2.7/web_interface) directory:
 
 ```
 $ mv qt4db ../web_interface/
