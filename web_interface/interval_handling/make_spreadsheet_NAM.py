@@ -1,12 +1,14 @@
 import sys
 import argparse
-db_file = 'qt4db'
-header = ['gene_name','chromosome','start',]
+from datetime import datetime
+#mysite = 'qteller3'
+db_file = '/var/www/html/qTeller/web_interface/qtnamdb'
+header = ['gene_name','chromosome','start','stop','filtered']
 parser = argparse.ArgumentParser(description="Retrieve genes from a specificed genomic interval.")
 parser.add_argument("--chr")
 parser.add_argument("--start")
 parser.add_argument("--stop")
-parser.add_argument("--filtered",action="store_true")
+parser.add_argument("--filtered")
 parser.add_argument("--link",action="store_true")
 parser.add_argument("--included_vals")
 args = parser.parse_args()
@@ -14,34 +16,47 @@ import sqlite3
 mystart = int(args.start)
 mystop = int(args.stop)
 mychr = args.chr
+myfiltered = args.filtered
 header.extend(args.included_vals.split(','))
 conn = sqlite3.connect(db_file)
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 p_dict = {}
-p_starts = {}
+p_start = {}
+p_stop = {}
+p_chr = {}
+p_filtered = {}
+fh2 = open('./tmp/%s.%i.%i.%s.csv' % (mychr,mystart,mystop,myfiltered),'w')
+fh3 = open("./tmp/%s.%i.%i.%s.html" % (mychr,mystart,mystop,myfiltered),'w')
 if args.link:
     syns = []
     for x in header:
-        c.execute("select * from data_sets where stub_id=?",(x,))
+        c.execute("select * from data_sets where stub_id=?",(x))
         for r in c:
             if r['type'] == 'Synteny':
                 syns.append(x)
 header2 = []
 for h in header:
     header2.append(h.replace(" ",'_'))
-c.execute("select * from gene_table where chromosome=? and stop>? and start <?",(mychr,mystart,mystop))
+if not 'all' in mychr and mystop != 0:
+    c.execute("select * from gene_table where chromosome=? and start>? and stop<? and filtered=?",(mychr,mystart,mystop,myfiltered))
+elif not 'all' in mychr and mystop == 0:
+    c.execute("select * from gene_table where chromosome=? and start>? and filtered=?", (mychr, mystart,myfiltered))
+else:
+    c.execute("select * from gene_table where start>? and filtered=?",(mystart,myfiltered))
 for row in c:
     myname = row['gene_name']
-    if args.filtered:
-        if row['filtered'] == 0: continue
-    p_starts[myname] = int(row['start'])
+    p_start[myname] = int(row['start'])
+    p_stop[myname] = int(row['stop'])
+    p_chr[myname] = row['chromosome']
+    p_filtered[myname] = row['filtered']
+    if row['chromosome'] in set(['chrMt','chr0','chrPt']): continue
     p_dict[myname] = []
     for v in header:
         if not v in row:
             print (v)
         p_dict[myname].append(str(row[v]))
-    p_dict[myname].append("http://qteller.com/qteller3/bar_chart.php?name=%s" % myname)
+    p_dict[myname].append("<a href='http://qteller.maizegdb.org/bar_chart_NAM.php?name=%s'>http://qteller.maizegdb.org/bar_chart_NAM.php?name=%s</a>" % (myname,myname))
     if args.link:
         link_list = ["http://genomevolution.org/CoGe/GEvo.pl?"]
         link_list.append("show_cns=1")
@@ -59,16 +74,18 @@ for row in c:
             p_dict[myname].append(";".join(link_list))
         else:
             p_dict[myname].append('No Syntelogs')
-fh2 = open('./tmp/%s.%i.%i.csv' % (mychr,mystart,mystop),'w')
-fh3 = open("./tmp/%s.%i.%i.html" % (mychr,mystart,mystop),'w')
 header2.append("Visualize_Expression_Link")
 if args.link:
     header2.append("GEvo_Link")
+fh2.write("This spreadsheet was generated using qTeller http://qteller.maizegdb.org on %s.\nSubmit all questions and concerns to Contact page.\nFor a list of the publications where these RNA-seq data were originally published visit http://qteller.maizegdb.org/rna_data_sources.php\nFor a description of the process used to generate these FPKM values see http://qteller.maizegdb.org/RNAseq-analysis-recipe.pdf\n" % (datetime.today()))
 fh2.write(",".join(header2) + "\n")
 fh3.write("<table border=\"1\"><tr><td>" + "</td> <td>".join(header2) + "</td></tr>")
-for gene in sorted(list(p_dict),key=lambda g: p_starts[g]):
+genes = list(p_dict)
+genes.sort(key=lambda g: p_start[g])
+for gene in sorted(genes,key=lambda g: p_chr[g]):
     fh3.write("<tr><td>" + "</td> <td>".join(p_dict[gene]) + "</td></tr>")
     fh2.write(",".join(p_dict[gene]) + "\n")
 fh3.write("</table>")
 fh2.close()
 fh3.close()
+
