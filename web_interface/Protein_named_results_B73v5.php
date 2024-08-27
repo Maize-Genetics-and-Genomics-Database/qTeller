@@ -26,7 +26,10 @@ if (empty($mystop)) { $mystop=0; }
 $mystart = str_replace(',','',$mystart);
 $mystop = str_replace(',','',$mystop);
 $mychr = $_POST['chr'];
-$myinclude = $_POST['info'];
+$myinclude = escapeshellcmd(implode(",", $_POST['info']));
+$mynames = escapeshellcmd($mynames);
+$myinclude = escapeshellcmd($myinclude);
+
 if (isset($_POST["gene"])) {
 $mycommand = "python interval_handling/make_spreadsheet_named_gene_B73v5.py --names $mynames";
 }else if(isset($_POST["protein"])){
@@ -39,7 +42,7 @@ if ($myversion == '2F') {
 	$mycommand = $mycommand . " --link" ;
 	}
 */
-$mycommand = $mycommand . " --included_vals " . implode(",", $myinclude);
+$mycommand = $mycommand . " --included_vals " . $myinclude;
 exec($mycommand);
 #echo $mycommand;
 echo "<a href=\"tmp/custom.html\">View results on your web browser</a><br>";

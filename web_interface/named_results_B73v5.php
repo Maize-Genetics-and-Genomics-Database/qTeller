@@ -15,17 +15,17 @@
   </div>
 <?php
 #echo $_POST;
-$mynames = str_replace("\n","dummy",$_POST['gene_names']);
+$mynames = str_replace("\n","dummy",escapeshellcmd($_POST['gene_names']));
 $mynames = preg_replace('/\s+/','',$mynames);
 $myversion = $_POST['version'];
-$mystart = trim($_POST['start']);
+$mystart = trim(escapeshellcmd($_POST['start']));
 if (empty($mystart)) { $mystart=0; }
-$mystop = trim($_POST['stop']);
+$mystop = trim(escapeshellcmd($_POST['stop']));
 if (empty($mystop)) { $mystop=0; }
 $mystart = str_replace(',','',$mystart);
 $mystop = str_replace(',','',$mystop);
-$mychr = $_POST['chr'];
-$myinclude = $_POST['info'];
+$mychr = escapeshellcmd($_POST['chr']);
+$myinclude = escapeshellcmd(implode(",", $_POST['info']));
 $mycommand = "python interval_handling/make_spreadsheet_named_B73v5.py --names $mynames";
 if ($myversion == '2F') {
 	$mycommand = $mycommand . " --filtered ";
@@ -34,9 +34,9 @@ if ($myversion == '2F') {
 	$mycommand = $mycommand . " --link" ;
 	}
 */
-$mycommand = $mycommand . " --included_vals " . implode(",", $myinclude);
+$mycommand = $mycommand . " --included_vals " . $myinclude;
 exec($mycommand);
-echo $mycommand;
+#echo $mycommand;
 echo "<a href=\"tmp/custom.html\">View results on your web browser</a><br>";
 echo "<a href=\"tmp/custom.csv\">Download Results as a .csv spreadsheet</a>";
 ?>

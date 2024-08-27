@@ -38,7 +38,8 @@ $all_info = $myinfo;
 $all_info = 'all';
 #print_r($all_info);
 }
-
+$mygene = escapeshellcmd($mygene);
+$all_info = escapeshellcmd($all_info);
 $expression = str_replace("|","_",$all_info);
 $length = strlen($expression);
 if (($length > 150) && ($length % 2 == 0) ) {

@@ -30,6 +30,13 @@ $all_info = 'all';
 #echo $all_info;
 }
 
+$mygene1 = escapeshellcmd($mygene1);
+$mygene2 = escapeshellcmd($mygene2);
+$all_info = escapeshellcmd($all_info);
+$xmax = escapeshellcmd($xmax);
+$ymax = escapeshellcmd($ymax);
+
+
 #echo "\"$all_info\"";
 
 $expression = str_replace("|","_",$all_info);

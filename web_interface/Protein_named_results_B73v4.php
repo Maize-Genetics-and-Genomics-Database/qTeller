@@ -16,7 +16,7 @@
 <?php
 
 #echo $_POST;
-$mynames = str_replace("\n","dummy",$_POST['gene_names']);
+$mynames = str_replace("\n","dummy",escapeshellcmd($_POST['gene_names']));
 $mynames = preg_replace('/\s+/','',$mynames);
 $myversion = $_POST['version'];
 $mystart = trim($_POST['start']);
@@ -26,7 +26,7 @@ if (empty($mystop)) { $mystop=0; }
 $mystart = str_replace(',','',$mystart);
 $mystop = str_replace(',','',$mystop);
 $mychr = $_POST['chr'];
-$myinclude = $_POST['info'];
+$myinclude = escapeshellcmd(implode(",", $_POST['info']));
 if (isset($_POST["gene"])) {
 $mycommand = "python interval_handling/make_spreadsheet_named_gene_B73v4.py --names $mynames";
 }else if(isset($_POST["protein"])){
@@ -39,9 +39,9 @@ if ($myversion == '2F') {
 	$mycommand = $mycommand . " --link" ;
 	}
 */
-$mycommand = $mycommand . " --included_vals " . implode(",", $myinclude);
+$mycommand = $mycommand . " --included_vals " . $myinclude;
 exec($mycommand);
-echo $mycommand;
+#echo $mycommand;
 echo "<a href=\"tmp/custom.html\">View results on your web browser</a><br>";
 echo "<a href=\"tmp/custom.csv\">Download Results as a .csv spreadsheet</a>";
 ?>

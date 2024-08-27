@@ -22,6 +22,8 @@ if (array_key_exists("info",$_POST)) { $myinfo = $_POST["info"]; } else { $myinf
 #echo exec("echo \$MPLCONFIGDIR");
 putenv("MPLCONFIGDIR=/tmp/");
 $all_info = implode("|",$myinfo);
+$mygene = escapeshellcmd($mygene);
+$all_info = escapeshellcmd($all_info);
 echo exec("python image_handling/B73vsB104_chart_B73v4_B104v4.py --gene $mygene --exps \"$all_info\"");
 #echo "<p>$mygene</p>";
 #echo "<p>$all_info</p>";

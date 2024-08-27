@@ -54,8 +54,8 @@ for row in c:
     if row['chromosome'] in set(['chrMt','chr0','chrPt']): continue
     p_dict[myname] = []
     for v in header:
-    	if not v in row:
-    		print (v)
+        if not v in row:
+            print (v)
         p_dict[myname].append(str(row[v]))
     p_dict[myname].append("<a href='http://qteller.maizegdb.org/Rna_Protein_bar_chart_B73v5.php?name=%s&protein=Submit for Protein Abundance!'>http://qteller.maizegdb.org/Rna_Protein_bar_chart_B73v5.php?name=%s&protein=Submit for Protein Abundance!</a>" % (myname,myname))
     if args.link:

@@ -21,9 +21,14 @@ if (empty($mystop)) { $mystop=0; }
 $mystart = str_replace(',','',$mystart);
 $mystop = str_replace(',','',$mystop);
 $mychr = $_POST['chr'];
-$myinclude = $_POST['info'];
+$myinclude = escapeshellcmd(implode(",", $_POST['info']));
+
+$mychr = escapeshellcmd($mychr);
+$mystart = escapeshellcmd($mystart);
+$mystop = escapeshellcmd($mystop);
+$myfiltered = escapeshellcmd($myfiltered);
 $mycommand = "python interval_handling/make_spreadsheet_NAM.py --chr $mychr --start $mystart --stop $mystop --filtered $myfiltered";
-$mycommand = $mycommand . " --included_vals " . implode(",", $myinclude);
+$mycommand = $mycommand . " --included_vals " . $myinclude;
 exec($mycommand);
 #echo $mycommand;
 echo "<a href=\"tmp/$mychr.$mystart.$mystop.$myfiltered.html\">View results on your web browser</a><br>";

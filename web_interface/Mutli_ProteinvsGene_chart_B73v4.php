@@ -18,7 +18,8 @@ header("Expires: 0");
 
 if (array_key_exists("Tissues",$_POST)) { $mytissue = trim($_POST["Tissues"]); } else { $mytissue = trim($_GET["Tissues"]);}
 
-$mynames = str_replace("\n","dummy",$_POST['gene_names']);
+$mytissue = escapeshellcmd($mytissue);
+$mynames = str_replace("\n","dummy",escapeshellcmd($_POST['gene_names']));
 $mynames = preg_replace('/\s+/','',$mynames);
 #echo exec("echo \$MPLCONFIGDIR");
 putenv("MPLCONFIGDIR=/tmp/");
