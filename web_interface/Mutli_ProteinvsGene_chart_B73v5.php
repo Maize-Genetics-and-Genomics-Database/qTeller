@@ -21,12 +21,15 @@ if (array_key_exists("Tissues",$_POST)) { $mytissue = trim($_POST["Tissues"]); }
 $mytissue = escapeshellcmd($mytissue);
 $mynames = str_replace("\n","dummy",escapeshellcmd($_POST['gene_names']));
 $mynames = preg_replace('/\s+/','',$mynames);
+$mynames = str_replace('\dummy','dummy',$mynames);
 #echo exec("echo \$MPLCONFIGDIR");
 putenv("MPLCONFIGDIR=/tmp/");
 #$all_info = implode("|",$myinfo);
 $mytissue1 = '"'.$mytissue.'"';
 $mynames1 = '"'.$mynames.'"';
-echo exec("python image_handling/make_Multi_ProteinvsGene_chart_B73v5.py --names $mytissue1 --exps $mynames1");
+$cmd = "python image_handling/make_Multi_ProteinvsGene_chart_B73v5.py --names $mytissue1 --exps $mynames1";
+#echo $cmd;
+echo exec($cmd);
 #echo "<p>$mytissue1</p>";
 #echo "<p>$mynames1</p>";
 echo "<p><i>Click image to enlarge. Move your mouse over a bar to see details about that expression datapoint.</i></p>";
