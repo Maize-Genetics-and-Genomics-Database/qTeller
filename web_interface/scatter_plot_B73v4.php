@@ -16,6 +16,9 @@ if (array_key_exists("xmax",$_POST)) { $xmax = $_POST["xmax"]; } elseif (array_k
 if (array_key_exists("ymax",$_POST)) { $ymax = $_POST["ymax"]; } elseif (array_key_exists("ymax",$_GET)) { $ymax = $_GET["ymax"]; } else { $ymax = 0; }
 if (empty($ymax)) { $ymax = 0; }
 if (empty($xmax)) { $xmax = 0; }
+#print_r($myinfo);
+
+#print_r($myinfo);
 if (is_array($myinfo)  && (sizeof($myinfo) != 0)){ 
 #print_r($myinfo);
 $all_info = implode("|",$myinfo);
@@ -31,6 +34,7 @@ $mygene2 = escapeshellcmd($mygene2);
 $all_info = escapeshellcmd($all_info);
 $xmax = escapeshellcmd($xmax);
 $ymax = escapeshellcmd($ymax);
+$all_info = str_replace("\|","|",$all_info);
 $expression = str_replace("|","_",$all_info);
 $length = strlen($expression);
 if (($length > 150) && ($length % 2 == 0) ) {
@@ -49,7 +53,7 @@ if (($length > 150) && ($length % 2 == 0) ) {
 #echo exec("echo \$MPLCONFIGDIR");
 putenv("MPLCONFIGDIR=/tmp/");
 #echo "<p>python image_handling/make_scatter.py $mygene1,$mygene2 </p>";
-#echo "python image_handling/make_scatterplot.py --gene1 $mygene1 --gene2 $mygene2 --exps \"$all_info\" --xmax $xmax --ymax $ymax";
+//echo "python image_handling/make_scatterplot_B73v4.py --gene1 $mygene1 --gene2 $mygene2 --exps \"$all_info\" --xmax $xmax --ymax $ymax";
 if($all_info != 'all'){
 exec("python image_handling/make_scatterplot_B73v4.py --gene1 $mygene1 --gene2 $mygene2 --exps \"$all_info\" --xmax $xmax --ymax $ymax");
 }else{

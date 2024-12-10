@@ -1,0 +1,116 @@
+<?php
+include_once("include.php");
+class MyDB extends SQLite3
+{
+	function __construct()
+	{
+		$this->open('qtnamdb');
+	}
+}
+$db = new myDB();
+$result = $db->query("SELECT stub_id,experiment_id,type,link,source_id from data_sets");
+$exp_array = array();
+
+while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        if ($row['type'] == 'Expression') {
+
+if (!(array_key_exists(" <a href=\"" . $row['link'] . "\">(" . $row['source_id'] . ")</a>",$exp_array))){
+$exp_array[" <a href=\"" . $row['link'] . "\">(" . $row['source_id'] . ")</a>"] = array();
+                }
+$exp_array[" <a href=\"" . $row['link'] . "\">(" . $row['source_id'] . ")</a>"][$row['experiment_id']] = $row['stub_id'];
+        $all_array[] = $row['stub_id'];
+        }
+}
+
+$have_data = False;
+$no_vals = True;
+if (array_key_exists("name1",$_GET)) { 
+$mygene1 = $_GET["name1"];
+$mygene2 = $_GET["name2"];
+$have_data = True;
+if (strlen($_GET['info']) != 0) { 
+$no_vals = False;
+$info = explode('|',$_GET['info']); }
+else {
+$no_vals = True;
+$info = array();
+}
+}
+?>
+
+<html>
+<head>
+<script type="text/javascript">
+
+function copyToClipboard(elementId,TextId) {
+
+  // Create a "hidden" input
+  var aux = document.createElement("input");
+
+  // Assign it the value of the specified element
+  aux.setAttribute("value", document.getElementById(elementId).innerHTML);
+
+  // Append it to the body
+  document.body.appendChild(aux);
+
+  // Highlight its content
+  aux.select();
+
+  // Copy the highlighted text
+  document.execCommand("copy");
+
+  // Remove it from the body
+  document.body.removeChild(aux);
+
+  let textarea = document.getElementById(TextId);
+  textarea.focus();
+  textarea.value += document.getElementById(elementId).innerHTML + "\n";
+}
+
+</script>
+</head>
+<body>
+<link rel="stylesheet" type="text/css" media="all" href="css/common.css_Gene" />
+<div id="mainContainer">
+<?php require('header.html'); ?>
+<div id="pageContents">
+<?php require('welcome_navigation.html'); ?>
+<div id="contentContainer">
+<h2><font color="green">Two-Gene Scatterplot Advanced Options</font></h2>
+<p><i><b><font color="red">NOTE</font></b>:</i><b> NAM Visualize Expression </b><i> accepts only gene model IDs (Zm000), not classical or GRMZM IDs.</b></p>
+<b><font color="red">NOTE</font>: The Diepenbrock 2017 bioproject does not include reads for Ki11 or M162W, and NC358 and CML228 do not include all tissue types.</b>
+<br>
+<br>
+<form action="scatter_plot_NAM.php" method="post">
+<b><font color="green">Gene1 Name: <input id = 'geneName1' type="text" name='name1' <?php if ($have_data) {echo "value=\"$mygene1\"";} ?> /><br>
+Gene2 Name: <input id = 'geneName2' type="text" name='name2' <?php if ($have_data) {echo "value=\"$mygene2\"";} ?> /></font></b><br>
+<p>Try comparing the expression of these two genes <i id='gene5' onclick="copyToClipboard('gene5','geneName1')">Zm00001eb000060</i> and <i id='gene6' onclick="copyToClipboard('gene6','geneName2')">Zm00027ab051910</i><p>
+<p>qTeller takes a little while to generate  figures. Don't panic it nothing happens for 30 seconds after you click Submit.</p>
+<div id="subheaderContainer">
+<p><h3><font color="white">Select expression data</font></h3></p>
+        </div>
+        <p><b>Select which expression datasets you would like to analyze:</b><br>
+<div id="tool2Container">
+<?php
+echo $have_vals;
+foreach ($exp_array as $paper => $data_sets) {
+	if ($paper == '') continue;
+	$class = translateClass($paper);
+    echo "<br><b>$paper:</b><input type=\"radio\" name=\"chk_$class\" value=\"on\" onclick=\"check_all_boxes('$class', true)\" /><i>All on</i> <input type=\"radio\" name=\"chk_$class\" onclick=\"check_all_boxes('$class', false)\" value=\"off\" /><i>All off</i><br>";
+	echo "<table><tr>";
+	$rowcount = 2;
+	foreach ($data_sets as $mytext => $mystub) {
+		if ($rowcount % 4 == 2) echo "<tr>";
+		echo "<td><input class=\"$class\" type=\"checkbox\" name=\"info[]\" value=\"$mystub\"";
+		if ($have_data && in_array($mystub,$info)) { echo "checked=\"yes\"";}
+		echo " />$mytext</td>";
+		if ($rowcount++ % 4 == 1) echo "</tr>";
+		}
+	echo "</table></tr>";
+	} 
+?>
+<br>
+<input type="submit" style="font-face: 'Comic Sans MS'; font-size: larger; color: white; background-color: #cc0000; border: 3pt ridge lightgrey" value=" Submit! " name = "gene">
+</div>
+</body>
+</html>

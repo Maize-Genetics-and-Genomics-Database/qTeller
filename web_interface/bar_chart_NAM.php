@@ -34,6 +34,7 @@ $all_info = 'all';
 }
 $mygene = escapeshellcmd($mygene);
 $all_info = escapeshellcmd($all_info);
+$all_info = str_replace("\|","|",$all_info);
 $expression = str_replace("|","_",$all_info);
 $length = strlen($expression);
 if (($length > 150) && ($length % 2 == 0) ) {

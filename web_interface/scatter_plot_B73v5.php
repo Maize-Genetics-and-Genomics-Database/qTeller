@@ -31,6 +31,7 @@ $mygene2 = escapeshellcmd($mygene2);
 $all_info = escapeshellcmd($all_info);
 $xmax = escapeshellcmd($xmax);
 $ymax = escapeshellcmd($ymax);
+$all_info = str_replace("\|","|",$all_info);
 $expression = str_replace("|","_",$all_info);
 $length = strlen($expression);
 if (($length > 150) && ($length % 2 == 0) ) {
