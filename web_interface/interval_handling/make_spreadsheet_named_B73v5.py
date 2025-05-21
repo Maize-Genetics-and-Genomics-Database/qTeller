@@ -46,7 +46,7 @@ for gene in mygenes:
             if not v in row:
                 print (v)
             p_dict[myname].append(str(row[v]))
-        p_dict[myname].append("<a href='http://qteller.maizegdb.org/bar_chart_B73v5.php?name=%s'>http://qteller.maizegdb.org/bar_chart_B73v5.php?name=%s</a>" % (myname,myname))
+        p_dict[myname].append("<a href='https://qteller.maizegdb.org/bar_chart_B73v5.php?name=%s'>http://qteller.maizegdb.org/bar_chart_B73v5.php?name=%s</a>" % (myname,myname))
         if args.link:
             link_list = ["http://genomevolution.org/CoGe/GEvo.pl?"]
             link_list.append("show_cns=1")
@@ -67,7 +67,7 @@ for gene in mygenes:
 header2.append("Visualize_Expression_Link")
 if args.link:
     header2.append("GEvo_Link")
-fh2.write("This spreadsheet was generated using qTeller http://qteller.maizegdb.org on %s.\nSubmit all questions and concerns to Contact page.\nFor a list of the publications where these RNA-seq data were originally published visit http://qteller2.usda.iastate.edu/rna_data_sources.php\nFor a description of the process used to generate these TPM  values see http://qteller2.usda.iastate.edu/RNAseq-analysis-recipe.pdf\n" % (datetime.today()))
+fh2.write("This spreadsheet was generated using qTeller https://qteller.maizegdb.org on %s.\nSubmit all questions and concerns to Contact page.\nFor a list of the publications where these RNA-seq data were originally published visit https://qteller.maizegdb.org/rna_data_sources.php\nFor a description of the process used to generate these FPKM values see https://qteller.maizegdb.org/faq.php\n" % (datetime.today()))
 fh2.write(",".join(header2) + "\n")
 fh3.write("<table border=\"1\"><tr><td>" + "</td> <td>".join(header2) + "</td></tr>")
 genes = list(p_dict)
